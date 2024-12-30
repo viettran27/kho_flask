@@ -30,7 +30,6 @@
   padding-left: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   position: relative;
   height: 100dvh;
   padding-block: 0.5rem;
@@ -41,6 +40,10 @@
   .container {
       max-width: 1400px;
   }
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
 input {
@@ -102,13 +105,6 @@ tr th, tr td {
 th, td {
   padding-inline: 1rem;
   height: 3rem;
-}
-
-#actionRegion {
-  position: absolute;
-  bottom: 0;
-  width: calc(100% - 4rem);
-  padding-block: 0.5rem;
 }
 
 #saveBtn {

@@ -9,13 +9,14 @@
 <body>
   <div class="container">
     <button onclick="reset()">Thêm mới</button>
-    <div class="flex">
+    <div class="flex mt-2">
       <div>Số lượng ước tính</div>
       <input type="number" id="estimate" oninput="handleChangeEstimate(event)" placeholder="Nhập số lượng ước tính"></input>
     </div>
-    <input type="text" oninput="handleChangeBarcode(event)" placeholder="Nhập barcode ở đây"/>
-    <h1 class="text-center">Tổng: 0</h1>
-    <div id="tableContainer">
+    <input class="mt-2" type="text" oninput="handleChangeBarcode(event)" placeholder="Nhập barcode ở đây"/>
+    <button class="mt-2" disabled id="saveBtn" onclick="handleSave()">Lưu</button>
+    <h1 class="mt-2 text-center">Tổng: 0</h1>
+    <div class="mt-2" id="tableContainer">
       <table>
         <thead>
           <tr>
@@ -27,9 +28,6 @@
         
         </tbody>
       </table>
-    </div>
-    <div id="actionRegion">
-      <button disabled id="saveBtn" onclick="handleSave()">Lưu</button>
     </div>
   <div>
 </body>
