@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <button onclick="reset()">Thêm mới</button>
+    <div class="flex">
+      <div>Số lượng ước tính</div>
+      <input type="number" id="estimate" oninput="handleChangeEstimate(event)" placeholder="Nhập số lượng ước tính"></input>
+    </div>
+    <input type="text" oninput="handleChangeBarcode(event)" placeholder="Nhập barcode ở đây"/>
+    <h1 class="text-center">Tổng: 0</h1>
+    <div id="tableContainer">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã thùng</th>
+            <th>Thời gian thêm</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+        
+        </tbody>
+      </table>
+    </div>
+    <div id="actionRegion">
+      <button disabled id="saveBtn" onclick="handleSave()">Lưu</button>
+    </div>
+  <div>
+</body>
+<script>
+  let barcodeData = []
+  let estimate = null
+  let total = 0
+
+  const tbody = document.querySelector('#tbody')
+  const totalElm = document.querySelector('h1')
+
+  function getcurrentTime(date) {
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+
+    return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
+  }
+
+  function checkExist(value) {
+    return barcodeData.some((item) => item.code === value)
+  }
+
+  function handleChangeBarcode(e) {
+    const value = e.target.value.trim()
+    
+    if (!value) return
+    
+    e.target.value = ''
+    if (checkExist(value)) return
+    
+    const row = {
+      "code": value,
+      "datetime": new Date()
+    }
+  
+    barcodeData = [row, ...barcodeData]
+    total = barcodeData.length
+    
+    let newRow = tbody.insertRow(0); 
+
+    let cell1 = newRow.insertCell(0);
+    cell1.textContent = row.code;
+
+    let cell2 = newRow.insertCell(1);
+    cell2.textContent = getcurrentTime(row.datetime);
+
+    updateTotal()
+    toggleSaveBtn()
+  }
+
+  function updateTotal() {
+    totalElm.textContent = `Tổng: ${total}`
+  }
+
+  function toggleSaveBtn() {
+    if (Number(estimate) == Number(total)) {
+      document.querySelector('#saveBtn').disabled = false
+    } else {
+      document.querySelector('#saveBtn').disabled = true
+    }
+  }
+
+  function handleChangeEstimate(e) {
+    const value = e.target.value.trim()
+    if (!value) return
+
+    estimate = value
+    toggleSaveBtn()
+  }
+
+  function reset() {
+    total = 0
+    estimate = null
+    barcodeData = []
+
+    tbody.innerHTML = ''
+    updateTotal()
+    document.querySelector('#estimate').value = ''
+    document.querySelector('#saveBtn').disabled = true
+  }
+
+  function handleSave() {
+    fetch('/insert_inventory', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(barcodeData)
+    }).then(res => res.json())
+    .then(data => {
+      if (data.type === 'success') {
+        alert(data.message)
+        reset()
+      } else {
+        alert(data.message)
+      }
+    })
+  }
+</script>
+</html>

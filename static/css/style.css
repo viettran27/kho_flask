@@ -1,0 +1,121 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.container {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  height: 100dvh;
+  padding-block: 0.5rem;
+  overflow: hidden;
+}
+
+@media (min-width: 1400px) {
+  .container {
+      max-width: 1400px;
+  }
+}
+
+input {
+  width: 100%;
+  height: 2.5rem;
+  padding-inline: 0.75rem;
+  padding-block: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+}
+
+button {
+  padding-inline: 1rem;
+  padding-block: 0.5rem;
+  height: 2.5rem;
+  background-color: #000;
+  color: white;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+input[type="number"] {
+  flex: 1;
+}
+
+.text-center {
+  text-align: center;
+}
+
+#tableContainer {
+  width: 100%;
+  overflow: auto;
+  margin-bottom: 4rem;
+}
+
+table {
+  width: 100%;
+}
+
+thead th {
+  position: sticky;
+  background: white;
+  top: 0;
+  width: 50%;
+  color: hsl(215.4 16.3% 46.9%);
+}
+
+tr th, tr td {
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+th, td {
+  padding-inline: 1rem;
+  height: 3rem;
+}
+
+#actionRegion {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 4rem);
+  padding-block: 0.5rem;
+}
+
+#saveBtn {
+  width: 100%;
+}
+
+#saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
