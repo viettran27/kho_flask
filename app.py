@@ -1,8 +1,10 @@
 import os
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 from flask_sqlalchemy import SQLAlchemy
 import urllib.parse
 from dotenv import load_dotenv
+import pandas as pd
+import io
 
 app = Flask(__name__)
 
@@ -35,6 +37,16 @@ class Inventory(db.Model):
   Carton_Barcode = db.Column(db.String, primary_key=True)
   Time_Stamp = db.Column(db.String)
 
+class Summary(db.Model):
+  __tablename__ = 'BAO_CAO_KIEM_KE'
+  Carton_Barcode = db.Column(db.String, primary_key=True)
+  QR_Code = db.Column(db.String)
+  SO_NO = db.Column(db.String)
+  PO_NO = db.Column(db.String)
+  MO_NO = db.Column(db.String)
+  PackingWay_Code = db.Column(db.String)
+  Carton_No = db.Column(db.Integer)
+
 @app.route('/insert_inventory', methods=['POST'])
 def insert_inventory():
   try:
@@ -50,21 +62,47 @@ def insert_inventory():
     if new_inventories:
       db.session.add_all(new_inventories)
       db.session.commit()
+    
+    count = Inventory.query.count()
   
     if duplicates:
       return {
         "type": "error",
+        "count": count,
         "message": f"Bị trùng barcode: {', '.join(map(str, duplicates))}"
       }
 
     return {
       "type": "success",
+      "count": count,
       "message": "Thêm thành công"
     }
   
   except Exception as e:
     print(e)
     return jsonify({'error': str(e)}), 500
+
+@app.route('/download_excel')
+def download_excel():
+  summaries = Summary.query.all()
+  summaries_data = [{
+    "Carton_Barcode": summary.Carton_Barcode,
+    "QR_Code": summary.QR_Code,
+    "SO_NO": summary.SO_NO,
+    "PO_NO": summary.PO_NO,
+    "MO_NO": summary.MO_NO,
+    "PackingWay_Code": summary.PackingWay_Code,
+    "Carton_No": summary.Carton_No
+  } for summary in summaries]
+
+  df = pd.DataFrame(summaries_data)
+  output = io.BytesIO()
+  writer = pd.ExcelWriter(output)
+  df.to_excel(writer, index=False, sheet_name='Summaries')
+  writer._save()
+  output.seek(0)
+
+  return send_file(output, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', download_name=f'kiemke.xlsx', as_attachment=True)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=93, debug=True)

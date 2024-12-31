@@ -8,7 +8,10 @@
 </head>
 <body>
   <div class="container">
-    <button onclick="reset()">Thêm mới</button>
+    <div class="flex">
+      <button class="excel" onclick="downloadExcel()">Tải excel</button>
+      <button onclick="reset()">Thêm mới</button>
+    </div>
     <div class="flex mt-2">
       <div>Số lượng ước tính</div>
       <input type="number" id="estimate" oninput="handleChangeEstimate(event)" placeholder="Nhập số lượng ước tính"></input>
@@ -128,11 +131,45 @@
     }).then(res => res.json())
     .then(data => {
       if (data.type === 'success') {
-        alert(data.message)
-        reset()
+        alert(`Tổng đã lưu: ${data.count}
+${data.message}` 
+            )
       } else {
-        alert(data.message)
+        alert(`Tổng đã lưu: ${data.count}
+${data.message}`
+          )  
       }
+    })
+  }
+
+  function downloadExcel() {
+    const loader = document.createElement('div')
+    loader.classList.add('loader')
+    document.body.appendChild(loader)
+
+    fetch('/download_excel', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => {
+      return res.blob()
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const currentTime = new Date().toLocaleString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).replace(/\/|\s/g, '');
+      a.download = `kiemke_${currentTime}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      a.remove();
+      loader.remove();
+    })
+    .catch(err => {
+      loader.remove()
+      alert('Có lỗi từ hệ thống')
+      console.error(err)
     })
   }
 </script>

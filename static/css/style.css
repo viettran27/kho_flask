@@ -63,16 +63,22 @@ button {
   color: white;
   border-radius: 0.25rem;
   cursor: pointer;
+  width: 100%;
+}
+
+.excel {
+  background-color: green;
+  margin-right: 0.5rem;
 }
 
 .flex {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
 input[type="number"] {
   flex: 1;
+  margin-left: 0.5rem;
 }
 
 .text-center {
@@ -114,4 +120,35 @@ th, td {
 #saveBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.loader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+
+.loader::before {
+  content: '';
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
