@@ -50,8 +50,12 @@
     return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
   }
 
+  function checkHasSpChar(value) {
+    return value.includes('@')
+  }
+
   function checkExist(value) {
-    return barcodeData.some((item) => item.code === value)
+    return barcodeData.some((item) => (item.code === value))
   }
 
   function handleChangeBarcode(e) {
@@ -60,6 +64,7 @@
     if (!value) return
     
     e.target.value = ''
+    if (!checkHasSpChar(value)) return
     if (checkExist(value)) return
     
     const row = {
